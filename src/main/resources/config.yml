@@ -1,0 +1,23 @@
+# Plugins que o /freload plugin recusa recarregar (nem como dependentes)
+blocked:
+  - fAPI
+  - fDatabase
+  - fAuth
+  - fPermissions
+  - fReload
+
+# Placeholders: {plugin}, {n}, {erro}, {lista}
+messages:
+  uso: "&cUso: /freload help"
+  inexistente: "&cO plugin {plugin} não existe."
+  config-ok: "&a{plugin}: configuração recarregada."
+  config-ficheiro: "&e{plugin}: só o ficheiro foi relido (sem suporte a reload)."
+  config-erro: "&c{plugin}: falhou ({erro})."
+  config-resumo: "&7{n} plugin(s) recarregado(s)."
+  config-nenhum: "&eNenhum plugin para recarregar."
+  listar-cabecalho: "&7Plugins (&averde&7 = reload de config, &7cinza&7 = só ficheiro, &cvermelho&7 = bloqueado):"
+  plugin-uso: "&cUso: /freload plugin <plugin>"
+  plugin-bloqueado: "&cRecusado, não se mexeu em nada. Bloqueados ou de terceiros no conjunto: {lista}"
+  plugin-inicio: "&7A recarregar: {lista}"
+  plugin-ok: "&aRecarregados {n} plugin(s): {lista}"
+  plugin-erro: "&cFalhou: {erro}"

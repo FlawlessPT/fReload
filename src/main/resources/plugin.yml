@@ -1,0 +1,16 @@
+name: fReload
+main: pt.flawless.freload.FReload
+version: '1.0'
+api-version: '1.21'
+description: Recarrega configs e plugins sem /reload global
+depend: [fAPI]
+commands:
+  freload:
+    description: Recarrega configs e plugins
+    usage: /freload help
+    aliases: [frl]
+    permission: freload.admin
+permissions:
+  freload.admin:
+    description: Usar o /freload
+    default: false
