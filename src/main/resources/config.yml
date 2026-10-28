@@ -15,7 +15,7 @@ messages:
   config-erro: "&c{plugin}: falhou ({erro})."
   config-resumo: "&7{n} plugin(s) recarregado(s)."
   config-nenhum: "&eNenhum plugin para recarregar."
-  listar-cabecalho: "&7Plugins (&averde&7 = reload de config, &7cinza&7 = só ficheiro, &cvermelho&7 = bloqueado):"
+  listar-cabecalho: "&7Plugins (&averde&7 = /freload config aplica a config a quente, &7cinza&7 = /freload config só relê o ficheiro, &cvermelho&7 = bloqueado). &7/freload plugin recarrega verdes e cinzentos:"
   plugin-uso: "&cUso: /freload plugin <plugin>"
   plugin-bloqueado: "&cRecusado, não se mexeu em nada. Bloqueados ou de terceiros no conjunto: {lista}"
   plugin-inicio: "&7A recarregar: {lista}"
