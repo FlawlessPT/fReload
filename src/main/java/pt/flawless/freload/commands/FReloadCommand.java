@@ -1,4 +1,4 @@
-package pt.flawless.freload;
+package pt.flawless.freload.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -10,6 +10,11 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import pt.flawless.fapi.messages.Messages;
 import pt.flawless.fapi.reload.Reloadable;
 import pt.flawless.fapi.reload.Reloads;
+import pt.flawless.freload.FReload;
+import pt.flawless.freload.config.Texts;
+import pt.flawless.freload.service.ConfigReloader;
+import pt.flawless.freload.service.PluginSwapper;
+import pt.flawless.freload.service.Plugins;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,33 +25,20 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /** {@code /freload}: {@code config [plugin]}, {@code plugin <plugin>}, {@code listar}, {@code help}. */
-final class FReloadCommand implements CommandExecutor, TabCompleter {
+public final class FReloadCommand implements CommandExecutor, TabCompleter {
 
     private final FReload main;
     private final Texts texts;
     private final ConfigReloader configReloader;
     private final PluginSwapper swapper;
 
-    FReloadCommand(FReload main, Texts texts) {
+    public FReloadCommand(FReload main, Texts texts) {
         this.main = main;
         this.texts = texts;
         this.configReloader = new ConfigReloader(texts);
         Set<String> blocked = main.getConfig().getStringList("blocked").stream()
                 .map(s -> s.toLowerCase(Locale.ROOT)).collect(Collectors.toSet());
         this.swapper = new PluginSwapper(blocked);
-    }
-
-    /** Plugin carregado pelo nome, sem distinguir maiúsculas; nulo se não existir. */
-    static Plugin find(String name) {
-        for (Plugin p : Bukkit.getPluginManager().getPlugins()) {
-            if (p.getName().equalsIgnoreCase(name)) return p;
-        }
-        return null;
-    }
-
-    /** Só os plugins do pacote {@code pt.flawless} se recarregam. */
-    static boolean isOurs(Plugin p) {
-        return p.getPluginMeta().getMainClass().startsWith("pt.flawless.");
     }
 
     @Override
@@ -79,7 +71,7 @@ final class FReloadCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(texts.get("plugin-uso"));
             return;
         }
-        Plugin target = find(args[1]);
+        Plugin target = Plugins.find(args[1]);
         if (target == null) {
             sender.sendMessage(texts.get("inexistente", "{plugin}", args[1]));
             return;
@@ -107,7 +99,7 @@ final class FReloadCommand implements CommandExecutor, TabCompleter {
         for (RegisteredServiceProvider<Reloadable> rsp : Reloads.all()) withReload.add(rsp.getPlugin().getName());
         sender.sendMessage(texts.get("listar-cabecalho"));
         String line = Arrays.stream(Bukkit.getPluginManager().getPlugins())
-                .filter(FReloadCommand::isOurs)
+                .filter(Plugins::isOurs)
                 .map(p -> (swapper.isBlocked(p) ? "§c" : withReload.contains(p.getName()) ? "§a" : "§7") + p.getName())
                 .collect(Collectors.joining("§7, "));
         sender.sendMessage(line);
@@ -120,7 +112,7 @@ final class FReloadCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             out.addAll(List.of("config", "plugin", "listar", "help"));
         } else if (args.length == 2 && (args[0].equalsIgnoreCase("config") || args[0].equalsIgnoreCase("plugin"))) {
-            for (Plugin p : Bukkit.getPluginManager().getPlugins()) if (isOurs(p)) out.add(p.getName());
+            for (Plugin p : Bukkit.getPluginManager().getPlugins()) if (Plugins.isOurs(p)) out.add(p.getName());
         }
         String prefix = args[args.length - 1].toLowerCase(Locale.ROOT);
         out.removeIf(s -> !s.toLowerCase(Locale.ROOT).startsWith(prefix));

@@ -3,6 +3,8 @@ package pt.flawless.freload;
 import org.bukkit.plugin.java.JavaPlugin;
 import pt.flawless.fapi.enums.EMessageTypeEnum;
 import pt.flawless.fapi.logs.FConsoleLogger;
+import pt.flawless.freload.commands.FReloadCommand;
+import pt.flawless.freload.config.Texts;
 
 public class FReload extends JavaPlugin {
     private final FConsoleLogger consoleLogger = new FConsoleLogger(this.getName());
@@ -22,7 +24,7 @@ public class FReload extends JavaPlugin {
         consoleLogger.sendDisablePluginMessage();
     }
 
-    void error(String message) {
+    public void error(String message) {
         consoleLogger.sendMessage(message, EMessageTypeEnum.ERROR);
     }
 }

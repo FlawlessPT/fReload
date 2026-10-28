@@ -1,4 +1,4 @@
-package pt.flawless.freload;
+package pt.flawless.freload.service;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginIdentifiableCommand;
@@ -26,37 +26,37 @@ import java.util.Set;
  * {@code lookupNames} do {@code PaperPluginInstanceManager} nem os comandos do CommandMap; é o que
  * se faz aqui, por reflexão.
  */
-final class PluginSwapper {
+public final class PluginSwapper {
 
-    static final class SwapException extends Exception {
-        SwapException(String message) {
+    public static final class SwapException extends Exception {
+        public SwapException(String message) {
             super(message);
         }
 
-        SwapException(String message, Throwable cause) {
+        public SwapException(String message, Throwable cause) {
             super(message, cause);
         }
     }
 
     private final Set<String> blocked;
 
-    PluginSwapper(Set<String> blockedLowercase) {
+    public PluginSwapper(Set<String> blockedLowercase) {
         this.blocked = blockedLowercase;
     }
 
-    boolean isBlocked(Plugin p) {
+    public boolean isBlocked(Plugin p) {
         return blocked.contains(p.getName().toLowerCase(Locale.ROOT));
     }
 
     /** Plugins do conjunto que não se podem recarregar (bloqueados ou de terceiros). */
-    List<String> refused(List<Plugin> set) {
+    public List<String> refused(List<Plugin> set) {
         List<String> out = new ArrayList<>();
-        for (Plugin p : set) if (isBlocked(p) || !FReloadCommand.isOurs(p)) out.add(p.getName());
+        for (Plugin p : set) if (isBlocked(p) || !Plugins.isOurs(p)) out.add(p.getName());
         return out;
     }
 
     /** O alvo mais os dependentes transitivos (depend e softdepend), do mais dependente ao alvo. */
-    List<Plugin> affected(Plugin target) {
+    public List<Plugin> affected(Plugin target) {
         Plugin[] all = Bukkit.getPluginManager().getPlugins();
         Set<Plugin> set = new LinkedHashSet<>();
         set.add(target);
@@ -97,7 +97,7 @@ final class PluginSwapper {
         return s;
     }
 
-    void reload(Plugin target) throws SwapException {
+    public void reload(Plugin target) throws SwapException {
         List<Plugin> order = affected(target);
         List<String> refused = refused(order);
         if (!refused.isEmpty()) throw new SwapException("bloqueados ou de terceiros: " + String.join(", ", refused));

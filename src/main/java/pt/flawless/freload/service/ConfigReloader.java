@@ -1,4 +1,4 @@
-package pt.flawless.freload;
+package pt.flawless.freload.service;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -6,25 +6,26 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import pt.flawless.fapi.reload.Reloadable;
 import pt.flawless.fapi.reload.Reloads;
+import pt.flawless.freload.config.Texts;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /** Reload de configs: chama o {@link Reloadable} do plugin, ou só relê o config.yml. */
-final class ConfigReloader {
+public final class ConfigReloader {
 
     private final Texts texts;
 
-    ConfigReloader(Texts texts) {
+    public ConfigReloader(Texts texts) {
         this.texts = texts;
     }
 
     /** {@code pluginName} nulo = todos os plugins {@code pt.flawless}. */
-    void reload(CommandSender sender, String pluginName) {
+    public void reload(CommandSender sender, String pluginName) {
         Map<String, Plugin> targets = new LinkedHashMap<>();
         if (pluginName != null) {
-            Plugin p = FReloadCommand.find(pluginName);
+            Plugin p = Plugins.find(pluginName);
             if (p == null) {
                 sender.sendMessage(texts.get("inexistente", "{plugin}", pluginName));
                 return;
@@ -32,7 +33,7 @@ final class ConfigReloader {
             targets.put(p.getName(), p);
         } else {
             Arrays.stream(Bukkit.getPluginManager().getPlugins())
-                    .filter(FReloadCommand::isOurs)
+                    .filter(Plugins::isOurs)
                     .forEach(p -> targets.put(p.getName(), p));
         }
         Map<String, Reloadable> reloadables = new LinkedHashMap<>();
