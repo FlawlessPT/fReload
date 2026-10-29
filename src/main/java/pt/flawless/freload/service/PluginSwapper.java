@@ -159,8 +159,10 @@ public final class PluginSwapper {
             Method m = JavaPlugin.class.getDeclaredMethod("getFile");
             m.setAccessible(true);
             File f = (File) m.invoke(p);
-            if (f.getParentFile() != null && f.getParentFile().getName().equals(".paper-remapped")) {
-                return new File(p.getDataFolder().getParentFile(), f.getName());
+            // A cópia remapeada fica em .paper-remapped/ ou em .paper-remapped/unknown-origin/ (nome <jar>-<timestamp>.jar).
+            if (f.getPath().replace('\\', '/').contains("/.paper-remapped/")) {
+                String name = f.getName().replaceFirst("-\\d+(\\.jar)$", "$1");
+                return new File(p.getDataFolder().getParentFile(), name);
             }
             return f;
         } catch (ReflectiveOperationException e) {
